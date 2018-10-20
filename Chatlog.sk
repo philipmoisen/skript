@@ -1,0 +1,27 @@
+options:
+	bandeord: "fuck" or "svin"
+	#bare forsæt på samme måde for alle ord der skal logges.
+
+command /chatlogtil:
+	permission: chatlog.admin
+	permission message: &cNope ikke denne gang.
+	trigger:
+		set {chat.log} to true:
+			if file "plugins/Chatlog/Bandeord.yml" doesn't exist:
+				create file "plugins/Chatlog/Bandeord.yml"
+
+on join:
+	if file "plugins/Chatlog/%player%/%uuid of player%.yml" doesn't exist:
+		create file "plugins/Chatlog/%player%/%uuid of player%.yml"
+		wf "##%player% beskeder" to "plugins/Chatlog/%player%/%uuid of player%.yml"
+on chat:
+	set {chat.%player%} to now
+	wf "[%{chat.%player%}%] Besked: %player% > %message%" to "plugins/Chatlog/%player%/%uuid of player%.yml"
+
+on chat:
+		if {chat.log} is true:
+			if message contains {@bandeord}:
+				send "&cLad være med at skrive grimt"
+				send "&cDin besked er blevet logget"
+				wf "Bandeord: %player% > %message%" to "plugins/Chatlog/Bandeord.yml"
+				cancel event
